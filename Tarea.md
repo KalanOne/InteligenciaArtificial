@@ -256,3 +256,141 @@ La aplicación práctica de las inteligencias múltiples se despliega en ámbito
 En el mundo laboral, las inteligencias múltiples modelan equipos colaborativos y eficientes, convirtiendo la diversidad de habilidades en un valioso activo. A pesar de los desafíos y críticas, esta teoría nos recuerda la riqueza que surge al abrazar la diversidad cognitiva y emocional.
 
 En última instancia, las inteligencias múltiples nos inspiran a celebrar la singularidad de cada individuo, enriqueciendo nuestras vidas y contribuyendo a comunidades más comprensivas. Este enfoque ilumina el camino hacia un mundo donde cada uno puede desplegar su potencial de manera única y valiosa.
+
+# Introducción a la Inteligencia Artificial: Introspección
+
+Coloca ocho alfiles (cuatro negros y cuatro blancos) en un tablero de ajedrez reducido, tal como se ve en la figura. El problema consiste en hacer que los alfiles negros intercambien sus posiciones con los blancos, ningún alfil debe atacar en ningún momento otro del color opuesto. Se deben alternarlos movimientos, primero uno blanco, luego uno negro, luego uno blanco y así sucesivamente. ¿Cuál es el mínimo número de movimientos en que se puede conseguir?
+
+
+La estrategia para lograr el intercambio de posiciones de los alfiles negros y blancos implica realizar movimientos en sentido horario. Inicialmente, se elige un alfil y se lo mueve a una casilla vacía, luego se repite el proceso con el alfil del color opuesto, siguiendo un patrón de movimientos en sentido horario alrededor del tablero. Este enfoque garantiza que los alfiles se redistribuyan sin ponerse en posición de ataque mutuo. La secuencia de movimientos sigue un patrón cíclico, alternando entre alfiles negros y blancos, hasta lograr la configuración deseada sin conflictos.
+En mi método empecé por el alfil 3 de los que están arriba, lo moví hasta el otro extremo, después hice su espejo en los del otro lado. Después la esquina que puede llegar en 2 movimientos a los lugares vacíos. La cantidad mínima de movimientos en lo que lo logré hacer fuer de 36 movimientos
+
+# Introducción a la Inteligencia Artificial: El proceso de razonamiento según la lógica
+## Problema de Josephus y los soldados
+
+Supongamos que hay *n* soldados numerados del 1 al *n* en un círculo. El problema consiste en determinar en qué posición debe sentarse Josephus para ser el último sobreviviente.
+
+Denotemos la posición ganadora como *f(n)*, es decir, la posición en la que Josephus debería sentarse cuando hay *n* soldados.
+
+La regla para eliminar a cada soldado es la siguiente: el soldado en la posición *i* eliminará al soldado en la posición *i+1*, y cuando lleguemos al final del círculo, volveremos al soldado en la posición 1.
+
+## Plantear la solución para varios casos:
+
+### Casos para *n=1*:
+Cuando hay un solo soldado, Josephus es el único y su posición ganadora es 1.
+*f(1)=1*
+
+### Casos para *n=2*:
+El soldado en la posición 1 eliminará al soldado en la posición 2, por lo que Josephus debe sentarse en la posición 1.
+*f(2)=1*
+
+### Casos para *n=3*:
+1. El soldado en la posición 1 elimina al soldado en la posición 2.
+2. El soldado en la posición 3 elimina al soldado en la posición 1.
+Entonces, Josephus debe sentarse en la posición 3.
+*f(3)=3*
+
+### Casos para *n=4*:
+1. El soldado en la posición 1 elimina al soldado en la posición 2.
+2. El soldado en la posición 3 elimina al soldado en la posición 4.
+3. El soldado en la posición 1 elimina al soldado en la posición 3.
+Entonces, Josephus debe sentarse en la posición 1.
+*f(4)=1*
+
+### Casos para *n=5*:
+1. El soldado en la posición 1 elimina al soldado en la posición 2.
+2. El soldado en la posición 3 elimina al soldado en la posición 4.
+3. El soldado en la posición 5 elimina al soldado en la posición 1.
+4. El soldado en la posición 3 elimina al soldado en la posición 5.
+Entonces, Josephus debe sentarse en la posición 3.
+*f(5)=3*
+
+### Casos para *n=6*:
+1. El soldado en la posición 1 elimina al soldado en la posición 2.
+2. El soldado en la posición 3 elimina al soldado en la posición 4.
+3. El soldado en la posición 5 elimina al soldado en la posición 6.
+4. El soldado en la posición 1 elimina al soldado en la posición 3.
+5. El soldado en la posición 5 elimina al soldado en la posición 1.
+Entonces, Josephus debe sentarse en la posición 5.
+*f(6)=5*
+
+### Casos para *n=7*:
+1. El soldado en la posición 1 elimina al soldado en la posición 2.
+2. El soldado en la posición 3 elimina al soldado en la posición 4.
+3. El soldado en la posición 5 elimina al soldado en la posición 6.
+4. El soldado en la posición 7 elimina al soldado en la posición 1.
+5. El soldado en la posición 3 elimina al soldado en la posición 5.
+6. El soldado en la posición 7 elimina al soldado en la posición 3.
+Entonces, Josephus debe sentarse en la posición 7.
+*f(7)=7*
+
+### Casos para *n=8*:
+1. El soldado en la posición 1 elimina al soldado en la posición 2.
+2. El soldado en la posición 3 elimina al soldado en la posición 4.
+3. El soldado en la posición 5 elimina al soldado en la posición 6.
+4. El soldado en la posición 7 elimina al soldado en la posición 8.
+5. El soldado en la posición 1 elimina al soldado en la posición 3.
+6. El soldado en la posición 5 elimina al soldado en la posición 7.
+7. El soldado en la posición 1 elimina al soldado en la posición 5.
+Entonces, Josephus debe sentarse en la posición 1.
+*f(8)=1*
+
+### Casos para *n=9*:
+1. El soldado en la posición 1 elimina al soldado en la posición 2.
+2. El soldado en la posición 3 elimina al soldado en la posición 4.
+3. El soldado en la posición 5 elimina al soldado en la posición 6.
+4. El soldado en la posición 7 elimina al soldado en la posición 8.
+5. El soldado en la posición 9 elimina al soldado en la posición 1.
+6. El soldado en la posición 3 elimina al soldado en la posición 5.
+7. El soldado en la posición 7 elimina al soldado en la posición 9.
+8. El soldado en la posición 3 elimina al soldado en la posición 7.
+Entonces, Josephus debe sentarse en la posición 3.
+*f(9)=3*
+
+### Casos para *n=10*:
+1. El soldado en la posición 1 elimina al soldado en la posición 2.
+2. El soldado en la posición 3 elimina al soldado en la posición 4.
+3. El soldado en la posición 5 elimina al soldado en la posición 6.
+4. El soldado en la posición 7 elimina al soldado en la posición 8.
+5. El soldado en la posición 9 elimina al soldado en la posición 10.
+6. El soldado en la posición 1 elimina al soldado en la posición 3.
+7. El soldado en la posición 5 elimina al soldado en la posición 7.
+8. El soldado en la posición 9 elimina al soldado en la posición 1.
+9. El soldado en la posición 5 elimina al soldado en la posición 9.
+Entonces, Josephus debe sentarse en la posición 5.
+*f(10)=5*
+
+## Resultados
+
+| n   | Resultado |
+| --- | --------- |
+| 1   | 1         |
+| 2   | 1         |
+| 3   | 3         |
+| 4   | 1         |
+| 5   | 3         |
+| 6   | 5         |
+| 7   | 7         |
+| 8   | 1         |
+| 9   | 3         |
+| 10  | 5         |
+
+Hasta este punto, se pueden observar 2 patrones:
+
+1. Cuando *n* es una potencia de 2 (como 1, 2, 4, 8, ...), la posición ganadora es siempre 1. Esto concuerda con la observación de que Josephus debería sentarse en la posición 1 cuando el número de soldados es una potencia de 2.
+2. Cuando *n* no es una potencia de 2, la posición ganadora parece seguir un patrón que no es simplemente *n*. En cambio, parece relacionarse con la distancia a la potencia de 2 más cercana que es menor o igual a *n*.
+
+### Generalizando seguimos con las observaciones de los patrones en formulas:
+
+1. **Potencia de 2:**
+   - Cuando *n* es una potencia de 2, la posición ganadora es siempre 1.
+   - Ejemplos: *f(1)=1*, *f(2)=1*, *f(4)=1*, etc.
+   
+2. **Distancia a la Potencia de 2:**
+   - Cuando *n* no es una potencia de 2, la posición ganadora parece estar relacionada con la distancia a la potencia de 2 más cercana que es menor o igual a *n*.
+   - Esta distancia es *n - 2⌊log₂(n)⌋*.
+   
+**Fórmula General:**
+*f(n)=2⋅(n−2^⌊log₂(n)⌋)+1*
+
+Esta fórmula sugiere que la posición ganadora se calcula tomando la distancia de *n* a la potencia de 2 más cercana, multiplicándola por 2, y luego sumándole 1.
