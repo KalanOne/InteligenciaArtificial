@@ -2,7 +2,7 @@
 
 ## Redactar un ensayo mínimo 2000 palabras, del capítulo 1,2, 26, 27, apartado A del libro, inteligencia artificial un enfoque moderno
 
-El libro se tratan muchos temas, empezando por su historia el cual pasó por mucho incluso empezando desde Aristóteles, después da un salto hasta la época “moderna”, donde empieza verdaderamente el avance de lo que es la inteligencia artificial, pero se nos muestra que no siempre tuvo ese enfoque de considerarse como inteligencia artificial si no hasta mucho tiempo después, al inicio lo que se buscaba era que las computadoras pudieran realizar tareas más complejas, después se tomó en cuenta lo que es el procesamiento del lenguaje natural, pero al no haber mucho éxito en este campo de dejó aunque se retomó unos años más adelante.
+En el libro se tratan muchos temas, empezando por su historia el cual pasó por mucho incluso empezando desde Aristóteles, después da un salto hasta la época “moderna”, donde empieza verdaderamente el avance de lo que es la inteligencia artificial, pero se nos muestra que no siempre tuvo ese enfoque de considerarse como inteligencia artificial si no hasta mucho tiempo después, al inicio lo que se buscaba era que las computadoras pudieran realizar tareas más complejas, después se tomó en cuenta lo que es el procesamiento del lenguaje natural, pero al no haber mucho éxito en este campo de dejó aunque se retomó unos años más adelante.
 
 Parte que ayudó a impulsar esta área de la inteligencia artificial fueron los juegos, entre ellos se destacan algunos, como ajedrez o dama chinas, en el cual hubo alguien que dijo que en aproximadamente 1 década las computadoras podrían jugar mejor ajedrez que un humano, y así fue, pero no en el tiempo que él había establecido sino varias décadas después. Siendo este el centro del capitulo 1 del libro “Inteligencia Artificial Un enfoque Moderno” escrito por Stuart J. Russell, la historia podría ser su centro, es muy importante para entender por todo lo que había pasado, pero no siendo tan importante a la hora de implementar algún tipo de inteligencia artificial.
 
@@ -305,8 +305,6 @@ En mi método empecé por el alfil 3 de los que están arriba, lo moví hasta el
 
 ## Una vez que se resolvió el algoritmo de las islas en la siguiente imagencontar los elementos que tienen el color rojo
 
-# Introducción a la Inteligencia Artificial: El proceso de razonamiento según la lógica
-
 ```python
 import cv2 as cv
 import numpy as np
@@ -374,6 +372,8 @@ print("Número de islas:", count_islas)
 cv.waitKey(0)
 cv.destroyAllWindows()
 ```
+
+# Introducción a la Inteligencia Artificial: El proceso de razonamiento según la lógica
 
 ## Problema de Josephus y los soldados
 
@@ -767,10 +767,9 @@ Estado final = [M,M,M,0,V,V,V]
 
 [M,M,M,0,V,V,V]
 
-
 ### Problema de los 3 misioneros y los 3 caníbales
 
-Tres misioneros se perdieron explorando una jungla. Separados de sus compañeros, sin alimento y sin radio, solo sabían que para llegar a su destino debían ir siempre hacia adelante.  Los tres misioneros se detuvieron frente a un río que les bloqueaba el paso, preguntándose que podían hacer. De repente, aparecieron tres caníbales llevando un bote, pues también el-los querían cruzar el río. Ya anteriormente se habían encontrado grupos de misioneros y caníbales, y cada uno respetaba a los otros, pero sin confiaren ellos.
+Tres misioneros se perdieron explorando una jungla. Separados de sus compañeros, sin alimento y sin radio, solo sabían que para llegar a su destino debían ir siempre hacia adelante. Los tres misioneros se detuvieron frente a un río que les bloqueaba el paso, preguntándose que podían hacer. De repente, aparecieron tres caníbales llevando un bote, pues también el-los querían cruzar el río. Ya anteriormente se habían encontrado grupos de misioneros y caníbales, y cada uno respetaba a los otros, pero sin confiaren ellos.
 
 Los caníbales se daban un festín con los misioneros cuando les superaban en número. Los tres caníbales deseaban ayudar a los misioneros a cruzar el río, pero su bote no podía llevar más de dos personas a la vez y los misioneros no querían que los caníbales les superaran en número.
 
@@ -788,13 +787,9 @@ canibales en derecha [0,0,0,0,1,0]
 
 misioneros en derecha [0,0,0,0,0,1]
 
-
-
 Estado inicial = [0,0,0,1,3,3]
 
 Estado final = [3,3,1,0,0,0]
-
-
 
 [0,0,0,1,3,3]
 
