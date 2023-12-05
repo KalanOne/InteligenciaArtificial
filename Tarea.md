@@ -138,7 +138,7 @@ La exploración de la inteligencia artificial, desde su aplicación en medicina 
 
 # Introducción a la Inteligencia Artificial: Tipos de Inteligencia.
 
-## Escribir un ensayo mínimo de 4 cuartillas de la teoría de las inteligen-cias múltiples según Gardner
+## Escribir un ensayo mínimo de 4 cuartillas de la teoría de las inteligencias múltiples según Gardner
 
 ### Introducción
 
@@ -264,7 +264,116 @@ Coloca ocho alfiles (cuatro negros y cuatro blancos) en un tablero de ajedrez re
 La estrategia para lograr el intercambio de posiciones de los alfiles negros y blancos implica realizar movimientos en sentido horario. Inicialmente, se elige un alfil y se lo mueve a una casilla vacía, luego se repite el proceso con el alfil del color opuesto, siguiendo un patrón de movimientos en sentido horario alrededor del tablero. Este enfoque garantiza que los alfiles se redistribuyan sin ponerse en posición de ataque mutuo. La secuencia de movimientos sigue un patrón cíclico, alternando entre alfiles negros y blancos, hasta lograr la configuración deseada sin conflictos.
 En mi método empecé por el alfil 3 de los que están arriba, lo moví hasta el otro extremo, después hice su espejo en los del otro lado. Después la esquina que puede llegar en 2 movimientos a los lugares vacíos. La cantidad mínima de movimientos en lo que lo logré hacer fuer de 36 movimientos
 
+# Introducción a la Inteligencia Artificial: Introspección
+
+## Hacer un programa que pueda contar el numero de elementos que son del mismo color
+
+```python
+   def visitar_isla(matriz, visitado, i, j, filas, columnas):
+   if i < 0 or i >= filas or j < 0 or j >= columnas or matriz[i][j] == 0 or visitado[i][j]:
+   return
+
+      visitado[i][j] = True
+
+      visitar_isla(matriz, visitado, i + 1, j, filas, columnas)
+      visitar_isla(matriz, visitado, i - 1, j, filas, columnas)
+      visitar_isla(matriz, visitado, i, j + 1, filas, columnas)
+      visitar_isla(matriz, visitado, i, j - 1, filas, columnas)
+
+   matriz_ejemplo = [
+   [0, 0, 0, 0, 0, 0, 1, 1],
+   [0, 1, 1, 0, 0, 1, 0, 0],
+   [0, 1, 1, 0, 0, 0, 0, 0],
+   [0, 0, 0, 0, 0, 1, 1, 1],
+   [0, 0, 1, 1, 0, 0, 0, 0]
+   ]
+
+   filas, columnas = len(matriz*ejemplo), len(matriz_ejemplo[0])
+   visitado = [[False] * columnas for _ in range(filas)]
+   count_islas = 0
+
+   for i in range(filas):
+   for j in range(columnas):
+   if matriz_ejemplo[i][j] == 1 and not visitado[i][j]:
+   count_islas += 1
+   visitar_isla(matriz_ejemplo, visitado, i, j, filas, columnas)
+
+   print("Número de islas:", count_islas)
+```
+
+# Introducción a la Inteligencia Artificial: Introspección
+
+## Una vez que se resolvió el algoritmo de las islas en la siguiente imagencontar los elementos que tienen el color rojo
+
 # Introducción a la Inteligencia Artificial: El proceso de razonamiento según la lógica
+
+```python
+import cv2 as cv
+import numpy as np
+
+
+def visitar_isla_roja(matriz, visitado, inicio_fila, inicio_columna, filas, columnas):
+    stack = [(inicio_fila, inicio_columna)]
+    isla_size = 0
+
+    while stack:
+        i, j = stack.pop()
+        if 0 <= i < filas and 0 <= j < columnas and matriz[i][j] == 255 and not visitado[i][j]:
+            visitado[i][j] = True
+            isla_size += 1
+
+            stack.append((i + 1, j))
+            stack.append((i - 1, j))
+            stack.append((i, j + 1))
+            stack.append((i, j - 1))
+
+    return isla_size
+
+def contar_islas_rojas(matriz, elementos_minimos=100):
+    filas, columnas = matriz.shape
+    visitado = np.zeros_like(matriz, dtype=bool)
+    count_islas = 0
+
+    for i in range(filas):
+        for j in range(columnas):
+            if matriz[i][j] == 255 and not visitado[i][j]:
+                isla_size = visitar_isla_roja(matriz, visitado, i, j, filas, columnas)
+                if isla_size >= elementos_minimos:
+                    count_islas += 1
+
+    return count_islas
+
+
+imagen = "f1.jpg"
+
+imgColorOriginal = cv.imread(imagen, 1)
+imgColorOriginal1 = cv.cvtColor(imgColorOriginal, cv.COLOR_BGR2RGB)
+imgColorOriginal2 = cv.cvtColor(imgColorOriginal1, cv.COLOR_RGB2HSV)
+
+umbralBajo = (0, 80, 80)
+umbralAlto = (10, 255, 255)
+umbralBajoB = (170, 80, 80)
+umbralAltoB = (180, 255, 255)
+
+mascara = cv.inRange(imgColorOriginal2, umbralBajo, umbralAlto)
+mascara2 = cv.inRange(imgColorOriginal2, umbralBajoB, umbralAltoB)
+
+mascara = mascara + mascara2
+resultado = cv.bitwise_and(imgColorOriginal, imgColorOriginal, mask=mascara)
+
+cv.imshow('resultado', resultado)
+cv.imshow('mascara', mascara)
+cv.imshow('imgColorOriginal', imgColorOriginal)
+
+matriz_imagen = np.array(mascara)
+
+count_islas = contar_islas_rojas(matriz_imagen, 200)
+
+print("Número de islas:", count_islas)
+
+cv.waitKey(0)
+cv.destroyAllWindows()
+```
 
 ## Problema de Josephus y los soldados
 
@@ -403,3 +512,310 @@ Hasta este punto, se pueden observar 2 patrones:
 _f(n)=2⋅(n−2^⌊log₂(n)⌋)+1_
 
 Esta fórmula sugiere que la posición ganadora se calcula tomando la distancia de _n_ a la potencia de 2 más cercana, multiplicándola por 2, y luego sumándole 1.
+
+```python
+import math
+
+def josephus_position(n):
+    power_of_two = 2 ** int(math.log2(n))
+    return 2 * (n - power_of_two) + 1
+
+n_soldiers = 41
+winner_position = josephus_position(n_soldiers)
+print(f"Josephus debe sentarse en la posición {winner_position} para sobrevivir.")
+```
+
+# Introducción a la Inteligencia Artificial: El papel de la heurística
+
+## Definir que es la heurística y cual es su papel en la resolución de problemas
+
+La heurística hace referencia al uso de normas amplias o métodos prácticos para abordar problemas y tomar decisiones, especialmente cuando se enfrenta a situaciones complejas o inciertas. Este enfoque se basa en la experiencia adquirida, el sentido común y la intuición, en lugar de seguir un conjunto estricto de reglas o algoritmos formales.
+
+El papel de las estrategias prácticas en la resolución de problemas ayuda a tomar decisiones de manera eficiente y rápida en situaciones donde la información es limitada o el tiempo es poco. A continuación, se destacan algunas características y funciones clave de las estrategias prácticas para resolver problemas:
+
+1. Simplificar el problema: Las estrategias prácticas a menudo implican simplificar un problema complejo al enfocarse en aspectos específicos y relevantes. Esto ayuda a reducir la carga mental y facilita la toma de decisiones de forma rápida.
+2. Rapidez: Los atajos permiten tomar decisiones rápidas al evitar un análisis exhaustivo de todas las posibilidades disponibles. En lugar de considerar todas las alternativas posibles, se toma un camino más corto para llegar a una solución aceptable.
+3. Ahorro de esfuerzos: Al utilizar atajos, se evita la necesidad de recursos significativos, como tiempo y esfuerzo mental, que serían requeridos para analizar exhaustivamente todas las opciones.
+4. Adaptabilidad: Los atajos son adaptables a diferentes situaciones y contextos. Pueden ser herramientas eficaces para la toma de decisiones en entornos cambiantes.
+5. Errores comunes: Aunque los atajos son útiles, también pueden dar lugar a errores comunes o sesgos cognitivos. Estos errores pueden surgir cuando las reglas de los atajos no son aplicables o cuando conducen a conclusiones subóptimas.
+
+Ejemplos comunes de heurísticas incluyen "regla del pulgar", "usar la primera solución que parece adecuada" o "seguir la mayoría". Aunque los atajos pueden ser eficaces, es importante reconocer sus limitaciones y comprender cuándo es apropiado aplicarlas en la resolución de problemas.
+
+## Resolver con recursividad, programar.
+
+```python
+def is_valid_move(labyrinth, x, y):
+    rows, cols = len(labyrinth), len(labyrinth[0])
+    return 0 <= x < rows and 0 <= y < cols and labyrinth[x][y] == 0
+
+
+def recursive_solve(labyrinth, current, goal, path):
+    x, y = current
+    if current == goal:
+        return True
+    if not is_valid_move(labyrinth, x, y) or current in path:
+        return False
+
+    path.append(current)
+
+    neighbors = [(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]
+
+    for neighbor in neighbors:
+        if recursive_solve(labyrinth, neighbor, goal, path):
+            return True
+
+    path.pop()
+    return False
+
+
+labyrinth = [
+    [1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [0, 0, 0, 0, 0, 0, 1, 0, 1],
+    [1, 1, 1, 0, 1, 1, 1, 0, 1],
+    [1, 0, 0, 0, 1, 0, 1, 0, 1],
+    [1, 0, 1, 1, 1, 0, 1, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 1, 1, 1, 0, 1, 0, 1],
+    [0, 0, 1, 0, 0, 0, 1, 0, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1],
+]
+
+start = (1, 0)
+goal = (7, 0)
+
+recursive_path = []
+recursive_solution = recursive_solve(labyrinth, start, goal, recursive_path)
+print("Recursive Algorithm:")
+if recursive_solution:
+    print("Solution found:")
+    for step in recursive_path:
+        print(step)
+else:
+    print("No solution found.")
+```
+
+## Proponer Algoritmo de Solución, programar.
+
+```python
+import heapq
+
+class Node:
+    def __init__(self, x, y, parent=None):
+        self.x = x
+        self.y = y
+        self.parent = parent
+        self.g = 0
+        self.h = 0
+
+    def __lt__(self, other):
+        # Se usa < para comparar nodos y determinar cuál es menor
+        return (self.g + self.h) < (other.g + other.h)
+
+def is_valid_move(labyrinth, x, y):
+    rows, cols = len(labyrinth), len(labyrinth[0])
+    return 0 <= x < rows and 0 <= y < cols and labyrinth[x][y] == 0
+
+def heuristic(node, goal):
+    # Distancia Manhattan entre el nodo y la meta
+    return abs(node.x - goal[0]) + abs(node.y - goal[1])
+
+def reconstruct_path(current_node):
+    path = []
+    while current_node:
+        path.append((current_node.x, current_node.y))
+        current_node = current_node.parent
+    # El path se construye del final al inicio, por lo que hay que invertirlo
+    return path[::-1]
+
+def a_star(labyrinth, start, goal):
+    open_set = []
+    closed_set = set()
+
+    start_node = Node(start[0], start[1])
+    goal_node = Node(goal[0], goal[1])
+
+    heapq.heappush(open_set, start_node)
+
+    while open_set:
+        current_node = heapq.heappop(open_set)
+
+        if (current_node.x, current_node.y) == (goal_node.x, goal_node.y):
+            return reconstruct_path(current_node)
+
+        closed_set.add((current_node.x, current_node.y))
+
+        neighbors = [(current_node.x + 1, current_node.y),
+                     (current_node.x - 1, current_node.y),
+                     (current_node.x, current_node.y + 1),
+                     (current_node.x, current_node.y - 1)]
+
+        for neighbor in neighbors:
+            if neighbor not in closed_set and is_valid_move(labyrinth, *neighbor):
+                neighbor_node = Node(neighbor[0], neighbor[1], current_node)
+                neighbor_node.g = current_node.g + 1
+                neighbor_node.h = heuristic(neighbor_node, goal)
+
+                if neighbor_node not in open_set:
+                    heapq.heappush(open_set, neighbor_node)
+
+labyrinth = [
+    [1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [0, 0, 0, 0, 0, 0, 1, 0, 1],
+    [1, 1, 1, 0, 1, 1, 1, 0, 1],
+    [1, 0, 0, 0, 1, 0, 1, 0, 1],
+    [1, 0, 1, 1, 1, 0, 1, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 1, 1, 1, 0, 1, 0, 1],
+    [0, 0, 1, 0, 0, 0, 1, 0, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1]
+]
+
+start = (1, 0)
+goal = (7, 0)
+
+a_star_solution = a_star(labyrinth, start, goal)
+print("A* Algorithm:")
+if a_star_solution:
+    print("Solution found:")
+    for step in a_star_solution:
+        print(step)
+else:
+    print("No solution found.")
+```
+
+## Describir el punto anterior
+
+El algoritmo A* es un algoritmo de búsqueda de rutas que se utiliza para encontrar el camino más corto entre dos nodos o puntos. A* es una versión popular y ampliamente utilizada de la búsqueda de rutas de primer nivel que es informada o guíada por heurística.
+
+El algoritmo A\* se basa en el algoritmo de búsqueda de rutas de primer nivel, que es un algoritmo de búsqueda de rutas no informado. La búsqueda de rutas de primer nivel es un algoritmo de búsqueda de rutas que se utiliza para encontrar el camino más corto entre dos nodos o puntos. La búsqueda de rutas de primer nivel es un algoritmo de búsqueda de rutas no informado, lo que significa que no tiene información sobre la ubicación y la distribución de los nodos en el espacio de búsqueda, excepto su vecindad directa. La búsqueda de rutas de primer nivel es un algoritmo de búsqueda de rutas completa, lo que significa que siempre encontrará una solución si existe.
+
+El algoritmo A* es una versión mejorada de la búsqueda de rutas de primer nivel. A* es un algoritmo de búsqueda de rutas informado, lo que significa que tiene información sobre la ubicación y la distribución de los nodos en el espacio de búsqueda, lo que se utiliza para guiar la búsqueda. A\* es un algoritmo de búsqueda de rutas completo, lo que significa que siempre encontrará una solución si existe.
+
+El programa empieza por la importación del módulo de heapq la cual ayuda a manejar proporciona funciones para trabajar con colas de prioridad implementadas como montículos binarios.
+
+Despues definimos un nodo el cual va a tener sus coordenadas del laberinto que se va a resolver, el padre del nodo y la distancia que tiene el nodo meta.Tambien se define `__lt__` para poder comparar los nodos y determinar cual es menor lo cual ayudará para el manejo de la cola de prioridad.
+
+Despues definimos una función que nos va a ayudar a saber si el movimiento que se va a realizar es valido o no, esta función recibe como parametros el laberinto y las coordenadas del nodo.
+
+Despues definimos una función que nos va a ayudar a calcular la distancia entre el nodo y la meta, esta función recibe como parametros el nodo y la meta. Esta función calcula la distancia Manhattan entre el nodo y la meta el cual es la suma de las diferencias absolutas de sus coordenadas.
+
+Despues definimos una función que nos va a ayudar a reconstruir el camino que se va a seguir para llegar a la meta, esta función recibe como parametro el nodo actual. Esta función va a ir agregando los nodos al camino hasta llegar al nodo inicial. Como la función va a ir agregando los nodos del final al inicio, se debe invertir el camino para que quede en el orden correcto.
+
+Despues definimos la función principal que es la que va a resolver el laberinto, esta función recibe como parametros el laberinto, el nodo inicial y el nodo meta. Esta función va a tener una cola de prioridad la cual va a tener el nodo inicial, un conjunto de nodos visitados y el nodo meta. Despues se agrega el nodo inicial a la cola de prioridad.
+Mientras que haya algun elemento en la cola de prioridad open_set que es la lista abierta que usa el algoritmo hará lo siguiente:
+
+1. Se saca el primer elemento de la cola de prioridad y se guarda en la variable current_node.
+2. Se verifica si el nodo actual es igual al nodo meta, si es igual se llama a la función reconstruct_path y se le pasa el nodo actual.
+3. Se agrega el nodo actual al conjunto de nodos visitados.
+4. Se definen los vecinos del nodo actual.
+5. Se recorren los vecinos del nodo actual.
+6. Se verifica si el vecino no está en el conjunto de nodos visitados y si el movimiento que se va a realizar es valido, si se cumple se crea un nodo vecino y se le asigna el nodo actual como padre, despues se le asigna la distancia del nodo actual más 1 y la distancia del nodo vecino a la meta.
+7. Se verifica si el nodo vecino no está en la cola de prioridad, si no está se agrega a la cola de prioridad.
+8. Se retorna el camino que se debe seguir para llegar a la meta.
+
+Despues se define el laberinto el cual en este caso es una matriz de 9x9, el nodo inicial y el nodo meta.
+
+Despues se llama a la función a_star y se le pasan los parametros definidos anteriormente.
+
+Despues se imprime el camino que se debe seguir para llegar a la meta.
+
+# Reglas y Búsquedas: Espacio de Estados
+
+## Generar el espacio de estados de los siguientes problemas
+
+### Problema de las ranas
+
+El juego consiste en pasar las 3 ranas verdes a la derecha y las 3 ranas marrones a la izquierda. Las ranas pueden saltar a una piedra vacía que tengan delante, o saltar por encima de otra rana si en medio de ambas hay una piedra vacía. Pulsa sobre la rana que quieres que salte.
+
+V = Rana Verde
+M = Rana Marrón
+0 = Piedra Vacía
+
+Estado inicial = [V,V,V,0,M,M,M]
+
+Estado final = [M,M,M,0,V,V,V]
+
+[V,V,V,0,M,M,M]
+
+[V,V,V,M,0,M,M]
+
+[V,V,0,M,V,M,M]
+
+[V,0,V,M,V,M,M]
+
+[V,M,V,0,V,M,M]
+
+[V,M,V,M,V,0,M]
+
+[V,M,V,M,V,M,0]
+
+[V,M,V,M,0,M,V]
+
+[V,M,0,M,V,M,V]
+
+[0,M,V,M,V,M,V]
+
+[M,0,V,M,V,M,V]
+
+[M,M,V,0,V,M,V]
+
+[M,M,V,M,V,0,V]
+
+[M,M,V,M,0,V,V]
+
+[M,M,0,M,V,V,V]
+
+[M,M,M,0,V,V,V]
+
+
+### Problema de los 3 misioneros y los 3 caníbales
+
+Tres misioneros se perdieron explorando una jungla. Separados de sus compañeros, sin alimento y sin radio, solo sabían que para llegar a su destino debían ir siempre hacia adelante.  Los tres misioneros se detuvieron frente a un río que les bloqueaba el paso, preguntándose que podían hacer. De repente, aparecieron tres caníbales llevando un bote, pues también el-los querían cruzar el río. Ya anteriormente se habían encontrado grupos de misioneros y caníbales, y cada uno respetaba a los otros, pero sin confiaren ellos.
+
+Los caníbales se daban un festín con los misioneros cuando les superaban en número. Los tres caníbales deseaban ayudar a los misioneros a cruzar el río, pero su bote no podía llevar más de dos personas a la vez y los misioneros no querían que los caníbales les superaran en número.
+
+¿Cómo puede resolverse el problema, sin que en ningún momento haya más caníbales que misioneros en cualquier orilla del río? recuerda que un misionero y un caníbal en una orilla del río más uno o dos caníbales en el bote al mismo lado, significa que los misioneros tendrán problemas.
+
+canibales en izquierda [1,0,0,0,0,0]
+
+misioneros en izquierda [0,1,0,0,0,0]
+
+bote en izquierda [0,0,1,0,0,0]
+
+bote en derecha [0,0,0,1,0,0]
+
+canibales en derecha [0,0,0,0,1,0]
+
+misioneros en derecha [0,0,0,0,0,1]
+
+
+
+Estado inicial = [0,0,0,1,3,3]
+
+Estado final = [3,3,1,0,0,0]
+
+
+
+[0,0,0,1,3,3]
+
+[1,1,1,0,2,2]
+
+[1,0,0,1,2,3]
+
+[3,0,1,0,0,3]
+
+[2,0,0,1,1,3]
+
+[2,2,1,0,1,1]
+
+[1,1,0,1,2,2]
+
+[1,3,1,0,2,0]
+
+[0,3,0,1,3,0]
+
+[2,3,1,0,1,0]
+
+[1,3,0,1,2,0]
+
+[3,3,1,0,0,0]
