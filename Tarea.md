@@ -1337,11 +1337,13 @@ Las configuraciones de la red neuronal son las siguientes:
 Los resultados de la red neuronal son los siguientes:
 
 1. Pérdida (Loss) y Precisión (Accuracy) en el Conjunto de Entrenamiento:
+
    Pérdida final en entrenamiento: 0.2925
 
    Precisión final en entrenamiento: 90.08%
 
 2. Pérdida (Loss) y Precisión (Accuracy) en el Conjunto de Validación:
+
    Pérdida final en validación: 0.1928
 
    Precisión final en validación: 94.54%
