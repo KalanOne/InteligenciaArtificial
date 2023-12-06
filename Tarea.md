@@ -1224,7 +1224,7 @@ Aqui los datos que se usan para variar las configuraciones son scaleFactor, minN
 
 ## Proyecto 3: CNN para Clasificar Imagenes de Flores
 
-para la obtencion del dataset en esta parte fue un poco diferente, pues se grabó videos de las flores y se extrajeron los frames de los videos para obtener las imagenes. Por cada frame se rotó desde -15 hasta 15 grados para lograr obtener un dataset mayor. El codigo para la obtencion del dataset es el siguiente:
+Para la obtencion del dataset en esta parte fue un poco diferente, pues se grabó videos de las flores y se extrajeron los frames de los videos para obtener las imagenes. Por cada frame se rotó desde -15 hasta 15 grados para lograr obtener un dataset mayor. El codigo para la obtencion del dataset es el siguiente:
 
 ```python
 import cv2
