@@ -1350,3 +1350,85 @@ Los resultados de la red neuronal son los siguientes:
 
 La diferencia entre la precisión de entrenamiento y la precisión de validación no es excesiva, lo cual es un buen indicador de generalización.
 La pérdida y precisión en ambos conjuntos parecen evolucionar de manera coherente durante el entrenamiento, sin señales de sobreajuste o subajuste significativos.
+
+Sus resultados una vez entrenada la red neuronal son los siguientes:
+
+- Found 6406 correct labels
+- Found 365 incorrect labels
+
+| Clase              | Precisión | Recuperación | F1-Score |
+| :----------------- | :-------: | :----------: | :------: |
+| Class 0: Daisy     |   0.93    |     0.97     |   0.95   |
+| Class 1: Dandelion |   0.98    |     0.94     |   0.96   |
+| Class 2: Roses     |   0.96    |     0.92     |   0.94   |
+| Class 3: Sunflower |   0.92    |     0.99     |   0.95   |
+| Class 4: TigerLily |   0.96    |     0.86     |   0.91   |
+
+- Exactitud (Accuracy): 0.95
+- Promedio Macro (Macro Avg): 0.94
+- Promedio Ponderado (Weighted Avg): 0.95
+
+Definiciones:
+
+- Precisión (Precision): La precisión mide la proporción de instancias positivas correctamente clasificadas entre todas las instancias clasificadas como positivas.
+
+- Recuperación (Recall o Sensibilidad): La recuperación mide la proporción de instancias positivas correctamente clasificadas entre todas las instancias que realmente son positivas.
+
+- F1-Score: El F1-Score es la media armónica de precisión y recuperación, proporcionando un equilibrio entre ambas métricas.
+
+- Exactitud (Accuracy): La exactitud mide la proporción de instancias correctamente clasificadas entre todas las instancias.
+
+- Promedio Macro (Macro Avg): El promedio no ponderado de precisión, recuperación y F1-Score para todas las clases.
+
+- Promedio Ponderado (Weighted Avg): El promedio ponderado según la proporción de instancias de cada clase, de precisión, recuperación y F1-Score para todas las clases.
+
+La CNN se guarda en un "archivo" (Carpeta) con el nombre de "flowers53.h5py" para luego ser utilizada en el programa de deteccion de flores.
+El programa usado para hacer la predicción de las flores es el siguiente:
+
+```python
+from keras.models import load_model
+from keras.preprocessing import image
+import numpy as np
+
+# Cargar el modelo
+model = load_model("flowers53.h5py")
+
+# Mapeo de etiquetas
+class_labels = {0: 'Daisy', 1: 'Dandelion', 2: 'Roses', 3: 'Sunflower', 4: 'TigerLily'}
+# 0 Daisy
+# 1 Dandelion
+# 2 Roses
+# 3 Sunflower
+# 4 TigerLily
+
+# Función para cargar y preprocesar la imagen
+def load_and_preprocess_image(image_path):
+    img = image.load_img(image_path, target_size=(120, 120))
+    img_array = image.img_to_array(img)
+    img_array = np.expand_dims(img_array, axis=0)
+    # img_array /= 255.0  # Normalizar los valores de píxeles al rango [0, 1]
+    return img_array
+
+# Función para realizar la predicción
+def predict_flower(image_path):
+    img_array = load_and_preprocess_image(image_path)
+    prediction = model.predict(img_array)
+    predicted_class = np.argmax(prediction)
+    predicted_label = class_labels[predicted_class]
+    confidence = prediction[0][predicted_class] * 100.0
+    return predicted_label, confidence
+
+while True:
+    # Ruta de la imagen proporcionada por el usuario
+    user_image_path = input("Ingrese la ruta de la imagen: ")
+    if user_image_path == "exit":
+        break
+    # Realizar predicción
+    predicted_label, confidence = predict_flower(user_image_path)
+
+    # Mostrar el resultado
+    print(f"La red neuronal predice que la flor en la imagen es: {predicted_label}")
+    print(f"Confianza: {confidence:.2f}%")
+```
+
+El programa primero carga el modelo de la CNN, despues se define el mapeo de etiquetas, despues se define la funcion de cargar y preprocesar la imagen la cual carga la imagen y la redimensiona a 120x120, despues se define la funcion de realizar la prediccion la cual carga la imagen, realiza la prediccion y obtiene la etiqueta de la prediccion y la confianza de la prediccion. Despues se le pide al usuario que ingrese la ruta de la imagen que quiere predecir, se realiza la prediccion y se muestra el resultado.
