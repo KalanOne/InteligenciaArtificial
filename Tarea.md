@@ -1179,6 +1179,7 @@ Una vez obtenido el dataset se utilizó la herramienta Cascade-Trainer-GUI con l
 - Negativas: 4,255
 - Stages: 20
 - Memoria: 12288
+
   El resto se dejó intacto. Una vez obtenido el archivo .xml se utilizó el siguiente codigo para la deteccion de rostros con cubrebocas.
 
 ```python
