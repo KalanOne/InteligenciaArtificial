@@ -32,7 +32,7 @@ Uno de los principales malentendidos radica en la idea de que las inteligencias 
 
 En el ámbito laboral, es innegable que las IA han transformado la forma en que realizamos ciertas tareas. En campos como la computación, las ciencias naturales y otros sectores, las IA han demostrado ser herramientas valiosas para el procesamiento de datos, el análisis de patrones y la automatización de procesos rutinarios. Sin embargo, es esencial destacar que estas herramientas están destinadas a complementar las habilidades humanas, no a eliminarlas. La interacción colaborativa entre humanos e IA puede conducir a mejoras significativas en la eficiencia y la productividad, pero siempre existe la necesidad de la intuición, la empatía y la toma de decisiones éticas que solo los humanos pueden aportar.
 
-La brecha entre la percepción popular y la realidad técnica de las IA puede tener implicaciones éticas significativas. Por un lado, existe el peligro de una confianza excesiva en estas tecnologías, asumiendo que pueden resolver todos los problemas sin intervención humana. Por otro lado, los temores infundados sobre la capacidad de las IA para reemplazar a los humanos pueden generar resistencia y aprehensión hacia la adopción de estas tecnologías, limitando su potencial beneficio.
+La discrepancia entre la visión común y la verdad técnica de la Inteligencia Artificial podría tener repercusiones éticas notables. Existe el riesgo de depositar demasiada confianza en estas tecnologías, creyendo que pueden solucionar todos los problemas sin necesidad de intervención humana. Por otro lado, los miedos sin fundamento sobre la habilidad de la IA para sustituir a los humanos pueden causar resistencia y temor hacia la implementación de estas tecnologías, limitando así su beneficio potencial.
 
 Desde una perspectiva filosófica, surge la cuestión de la relación entre la inteligencia artificial y la humanidad. ¿Cómo definimos la coexistencia armoniosa entre máquinas y seres humanos? ¿En qué medida las IA pueden enriquecer nuestras vidas sin erosionar aspectos fundamentales de nuestra humanidad? Estas preguntas trascienden la mera funcionalidad de las tecnologías y se sumergen en el tejido mismo de lo que significa ser humano.
 
@@ -814,3 +814,536 @@ Estado final = [3,3,1,0,0,0]
 [1,3,0,1,2,0]
 
 [3,3,1,0,0,0]
+
+# Generación de Dataset
+
+## Generar un dataset de rostros por lo menos 5 diferentes
+
+El codigo para la obtencion del dataset es el siguiente el cual se obtiene de la camara del computador y se guarda en la carpeta DataSet en la carpeta p para las imagenes que contienen rostros y en la carpeta n para las imagenes que no contienen rostros. Las imagenes se guardan en escala de grises. Para guardar las imagenes se presiona la tecla a para las imagenes que contienen rostros con cubrebocas y la tecla s para las imagenes que no contienen rostros sin cubrebocas y fondos.
+
+```python
+import cv2 as cv
+
+cap = cv.VideoCapture(0)
+
+i=0
+
+while True:
+    ret, frame = cap.read()
+
+    # frame =cv.rectangle(frame, (100, 100), (400, 400), (0, 255, 0), 3)
+    frame2= frame[100:400, 100:400]
+    frame3 = cv.cvtColor(frame2, cv.COLOR_BGR2GRAY)
+
+    cv.imshow('frame', frame)
+    cv.imshow('dataset', frame2)
+
+
+    k = cv.waitKey(1)
+    if k == ord('a'):
+        i=i+1
+        cv.imwrite('./DataSet/p/RostroCasa'+str(i)+'.jpg', frame3)
+    if k == ord('s'):
+        i=i+1
+        cv.imwrite('./DataSet/n/NoRostroCasa'+str(i)+'.jpg', frame3)
+
+
+    if k == ord('q'):
+        break
+
+cap.release()
+cv.destroyAllWindows()
+```
+
+# Proyectos
+
+## Proyecto 1: Juego Phaser
+
+El juego consiste en que el jugador debe esquivar una bala proveniente de la derecha a la altura del suelo y otra bala proveniente de arriba. El jugador solo pude esquivarlas saltando y moviendose hacia la derecha. El juego termina cuando el jugador es golpeado por una bala. El juego se hizo con el motor de juegos Phaser.
+
+```javascript
+var w = 800;
+var h = 400;
+var jugador;
+var fondo;
+
+var bala,
+  balaD = false,
+  nave;
+
+var nave2;
+var bala2,
+  balaD2 = false;
+
+var salto;
+var menu;
+var collisionOcurred = false;
+
+var velocidadBala;
+var gravedadBala;
+var despBala;
+var despBala2;
+var estatusAire;
+var estatuSuelo;
+var der;
+var estatusDer;
+
+var mov = 0;
+
+var nnNetwork,
+  nnEntrenamiento,
+  nnSalida,
+  datosEntrenamiento = [];
+var modoAuto = false,
+  eCompleto = false;
+
+var juego = new Phaser.Game(w, h, Phaser.CANVAS, "", {
+  preload: preload,
+  create: create,
+  update: update,
+  render: render,
+});
+
+function preload() {
+  // juego.load.image("fondo", "assets/game/fondo.jpg");
+  juego.load.image("fondo", "assets/game/Orphan2.jpg");
+  juego.load.spritesheet("mono", "assets/sprites/altair.png", 32, 48);
+  juego.load.image("nave", "assets/game/ufo.png");
+  juego.load.image("bala", "assets/sprites/purple_ball.png");
+  juego.load.image("menu", "assets/game/menu.png");
+}
+
+function create() {
+  juego.physics.startSystem(Phaser.Physics.ARCADE);
+  juego.physics.arcade.gravity.y = 800;
+  juego.time.desiredFps = 30;
+
+  fondo = juego.add.tileSprite(0, 0, w, h, "fondo");
+  fondo.tileScale.x = 0.5;
+  fondo.tileScale.y = 0.5;
+  nave = juego.add.sprite(w - 100, h - 70, "nave");
+  bala = juego.add.sprite(w - 100, h, "bala");
+  jugador = juego.add.sprite(50, h, "mono");
+  nave2 = juego.add.sprite(jugador.position.x - 30, 0, "nave");
+  bala2 = juego.add.sprite(nave2.position.x + 45, 50, "bala");
+
+  juego.physics.enable(jugador);
+  jugador.body.collideWorldBounds = true;
+  var corre = jugador.animations.add("corre", [8, 9, 10, 11]);
+  jugador.animations.play("corre", 10, true);
+
+  juego.physics.enable(bala);
+  juego.physics.enable(bala2);
+  bala.body.collideWorldBounds = true;
+  bala2.body.collideWorldBounds = true;
+
+  pausaL = juego.add.text(w - 100, 20, "Pausa", {
+    font: "20px Arial",
+    fill: "#fff",
+  });
+  pausaL.inputEnabled = true;
+  pausaL.events.onInputUp.add(pausa, self);
+  juego.input.onDown.add(mPausa, self);
+
+  salto = juego.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+  der = juego.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
+
+  nnNetwork = new synaptic.Architect.Perceptron(4, 6, 6, 2);
+  nnEntrenamiento = new synaptic.Trainer(nnNetwork);
+}
+
+function enRedNeural() {
+  nnEntrenamiento.train(datosEntrenamiento, {
+    rate: 0.0001,
+    iterations: 10000,
+    shuffle: true,
+  });
+}
+
+function datosDeEntrenamiento(param_entrada) {
+  console.log("Entrada", param_entrada[0] + " " + param_entrada[1]);
+  nnSalida = nnNetwork.activate(param_entrada);
+}
+
+function pausa() {
+  juego.paused = true;
+  menu = juego.add.sprite(w / 2, h / 2, "menu");
+  menu.anchor.setTo(0.5, 0.5);
+}
+
+function mPausa(event) {
+  if (juego.paused) {
+    var menu_x1 = w / 2 - 270 / 2,
+      menu_x2 = w / 2 + 270 / 2,
+      menu_y1 = h / 2 - 180 / 2,
+      menu_y2 = h / 2 + 180 / 2;
+
+    var mouse_x = event.x,
+      mouse_y = event.y;
+
+    if (
+      mouse_x > menu_x1 &&
+      mouse_x < menu_x2 &&
+      mouse_y > menu_y1 &&
+      mouse_y < menu_y2
+    ) {
+      if (
+        mouse_x >= menu_x1 &&
+        mouse_x <= menu_x2 &&
+        mouse_y >= menu_y1 &&
+        mouse_y <= menu_y1 + 90
+      ) {
+        eCompleto = false;
+        datosEntrenamiento = [];
+        modoAuto = false;
+      } else if (
+        mouse_x >= menu_x1 &&
+        mouse_x <= menu_x2 &&
+        mouse_y >= menu_y1 + 90 &&
+        mouse_y <= menu_y2
+      ) {
+        if (!eCompleto) {
+          console.log(
+            "",
+            "Entrenamiento " + datosEntrenamiento.length + " valores"
+          );
+          enRedNeural();
+          eCompleto = true;
+        }
+        modoAuto = true;
+      }
+
+      menu.destroy();
+      resetsBalas();
+      juego.paused = false;
+      // console.log(datosDeEntrenamiento.length);
+    }
+  }
+}
+
+function resetsBalas() {
+  jugador.body.velocity.x = 0;
+  jugador.body.velocity.y = 0;
+  jugador.position.x = 50;
+  bala.body.velocity.x = 0;
+  bala.position.x = w - 100;
+  balaD = false;
+  bala2.body.velocity.y = 0;
+  bala2.position.y = 50;
+  balaD2 = false;
+}
+
+function saltar() {
+  jugador.body.velocity.y -= 270;
+}
+
+function moverDer() {
+  jugador.body.position.x += 7;
+}
+
+function update() {
+  fondo.tilePosition.x -= 1;
+
+  juego.physics.arcade.collide([bala, bala2], jugador, colisionH, null, this);
+
+  estatuSuelo = 1;
+  // estatusAire = 0;
+  estatusDer = 0;
+
+  if (!jugador.body.onFloor()) {
+    estatuSuelo = 0;
+    // estatusAire = 1;
+  }
+
+  despBala = Math.floor(jugador.position.x - bala.position.x);
+
+  despBala2 = Math.floor(jugador.position.y - bala2.position.y);
+
+  if (modoAuto == false && salto.isDown && jugador.body.onFloor()) {
+    saltar();
+    estatuSuelo = 0;
+  }
+
+  if (modoAuto == false && der.isDown) {
+    moverDer();
+    estatusDer = 1;
+  }
+
+  if (modoAuto == true) {
+    datosDeEntrenamiento([despBala, velocidadBala, despBala2, gravedadBala]);
+    console.log("nnSalida", nnSalida[0] + " " + nnSalida[1]);
+    if (nnSalida[0] <= 0.5 && jugador.body.onFloor()) {
+      saltar();
+    }
+    if (nnSalida[1] >= 0.5) {
+      moverDer();
+    }
+  }
+
+  if (balaD == false) {
+    disparo();
+  }
+
+  if (balaD2 == false) {
+    disparo2();
+  }
+
+  if (bala.position.x <= 0) {
+    resetsBalas();
+  }
+
+  if (modoAuto == false) {
+    datosEntrenamiento.push({
+      input: [despBala, velocidadBala, despBala2, gravedadBala],
+      output: [estatuSuelo, estatusDer],
+    });
+
+    console.log(
+      despBala +
+        " " +
+        velocidadBala +
+        " " +
+        despBala2 +
+        " " +
+        gravedadBala +
+        " " +
+        estatuSuelo +
+        " " +
+        estatusDer
+    );
+  }
+}
+
+function disparo() {
+  velocidadBala = -1 * velocidadRandom(250, 500);
+  bala.body.velocity.y = 0;
+  bala.body.velocity.x = velocidadBala;
+  balaD = true;
+}
+
+function disparo2() {
+  gravedadBala = velocidadRandom(50, 100);
+  bala2.body.velocity.y = gravedadBala;
+  balaD2 = true;
+}
+
+function colisionH() {
+  pausa();
+}
+
+function velocidadRandom(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function render() {}
+```
+
+Es bastante codigo por analizar pero realmente solo nos inetersa algunos datos de aqui. Primero que nada se define el tamaño del juego y se cargan las imagenes que se van a utilizar. Despues se crean los objetos que se van a utilizar en el juego como el fondo, el jugador, las balas, la nave y el menu de pausa. Despues se define la funcion de pausa y la funcion de moverse a la derecha. Despues se define la funcion de saltar la cual se activa cuando se presiona la barra espaciadora. Despues se define la funcion de disparo la cual se activa cuando la bala llega al final del juego. Despues se define la funcion de disparo2 la cual se activa cuando la bala2 llega al final del juego. Despues se define la funcion de colisionH la cual se activa cuando el jugador es golpeado por una bala. Despues se define la funcion de velocidadRandom la cual nos ayuda a generar un numero aleatorio entre un rango de numeros. Despues se define la funcion de update la cual se ejecuta cada vez que se actualiza el juego. Dentro de esta funcion se actualiza la posicion del fondo, se verifica si el jugador esta en el suelo o en el aire, se verifica si el jugador se mueve a la derecha, se verifica si el jugador salta, se verifica si el jugador esta en modo automatico, se verifica si la bala llego al final del juego, se verifica si la bala2 llego al final del juego y se verifica si el jugador es golpeado por una bala. Despues se define la funcion de render la cual se ejecuta cada vez que se renderiza el juego.
+
+Cuando el juego esta siendo controlado por el jugador se van guardando los datos de entrenamiento en un arreglo el cual se va a utilizar para entrenar la red neuronal, sus entradas son la distancia entre el jugador y la bala, la velocidad de la bala, la distancia entre el jugador y la bala2 y la gravedad de la bala2. Sus salidas son si el jugador esta en el suelo o en el aire y si el jugador se mueve a la derecha o no. Esto solo se maneja con 2 salidas, estatusSuelo y estatusDer, las cuales son 1 si el jugador esta en el suelo y 0 si el jugador esta en el aire y 1 si el jugador se mueve a la derecha y 0 si el jugador no se mueve a la derecha. Cuando el jugador esta en modo automatico se activa la red neuronal la cual recibe como entradas la distancia entre el jugador y la bala, la velocidad de la bala, la distancia entre el jugador y la bala2 y la gravedad de la bala2. Sus salidas son si el jugador esta en el suelo o en el aire y si el jugador se mueve a la derecha o no. La red neuronal se entrena con los datos de entrenamiento y se activa la red neuronal para que el jugador salte o se mueva a la derecha dependiendo de las salidas de la red neuronal. El jugador salta cuando la salida de estatusSuelo es menor o igual a 0.5 y se mueve a la derecha cuando la salida de estatusDer es mayor o igual a 0.5.
+
+La definicion de la red neuronal es la siguiente:
+
+```javascript
+nnNetwork = new synaptic.Architect.Perceptron(4, 6, 6, 2);
+nnEntrenamiento = new synaptic.Trainer(nnNetwork);
+```
+
+La red neuronal tiene 4 entradas, 6 neuronas en una capa oculta, 6 neuronas en otra capa oculta y 2 salidas.
+
+La funcion de entrenamiento de la red neuronal es la siguiente:
+
+```javascript
+nnEntrenamiento.train(datosEntrenamiento, {
+  rate: 0.0001,
+  iterations: 10000,
+  shuffle: true,
+});
+```
+
+La red neuronal se entrena con los datos de entrenamiento, con una tasa de aprendizaje de 0.0001, con 10000 iteraciones y con los datos de entrenamiento desordenados.
+
+La funcion de activacion de la red neuronal es la siguiente:
+
+```javascript
+nnSalida = nnNetwork.activate(param_entrada);
+```
+
+La red neuronal se activa con las entradas de la distancia entre el jugador y la bala, la velocidad de la bala, la distancia entre el jugador y la bala2 y la gravedad de la bala2. La salida de la red neuronal se guarda en nnSalida la cual es un arreglo de 2 posiciones para luego ser utilizada para saltar y moverse a la derecha.
+
+## Proyecto 2: Detector de Rostros con Cubrebocas usando OpenCV y Haar Cascade
+
+Una vez obtenido el dataset se utilizó la herramienta Cascade-Trainer-GUI con los siguientes parametros:
+
+- Positivas: 85%
+- Negativas: 4,255
+- Stages: 20
+- Memoria: 12288
+  El resto se dejó intacto. Una vez obtenido el archivo .xml se utilizó el siguiente codigo para la deteccion de rostros con cubrebocas.
+
+```python
+import cv2 as cv
+
+rostro = cv.CascadeClassifier('cascade.xml')
+cap = cv.VideoCapture(0)
+
+if not cap.isOpened():
+    print("No se puede abrir la camara")
+    exit()
+
+i=0
+
+while True:
+    ret, frame = cap.read()
+    i=i+1
+    gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
+    rostros = rostro.detectMultiScale(gray, scaleFactor= 1.3, minNeighbors= 15, minSize=(60, 60))
+    for(x,y,w,h) in rostros:
+        frame =cv.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 5)
+        # frame =cv.rectangle(frame, (x+30, y+40), (x+w-30, y+h-100), (255, 0, 0), 3)
+        # w1=int(w/2)
+        # h1=int(h/2)
+        # frame=cv.circle(frame, (x+w1, y+h1+10), 25, (0, 0, 255), 3 )
+        # frame =cv.rectangle(frame, (x+30, y+h-20), (x+w-30, y+h-60), (0, 255, 0), 3)
+
+    if not ret:
+        print("No se puede")
+        break
+
+    cv.imshow('rostros', frame)
+
+    if cv.waitKey(1) == ord('q'):
+        break
+
+cap.release()
+cv.destroyAllWindows()
+```
+
+Aqui los datos que se usan para variar las configuraciones son scaleFactor, minNeighbors y minSize. scaleFactor es el factor de escala que se usa para crear una piramide de imagenes. minNeighbors es el numero de vecinos que cada rectangulo candidato debe retener. minSize es el tamaño minimo del objeto. Estos datos se pueden variar para obtener mejores resultados
+
+## Proyecto 3: CNN para Clasificar Imagenes de Flores
+
+para la obtencion del dataset en esta parte fue un poco diferente, pues se grabó videos de las flores y se extrajeron los frames de los videos para obtener las imagenes. Por cada frame se rotó desde -15 hasta 15 grados para lograr obtener un dataset mayor. El codigo para la obtencion del dataset es el siguiente:
+
+```python
+import cv2
+import os
+import numpy as np
+
+input_video = "RosaDesierto.mp4"
+
+flor = "RosaDesierto"
+
+output_folder = f"datasetFlowers/{flor}/"
+
+os.makedirs(output_folder, exist_ok=True)
+
+cap = cv2.VideoCapture(input_video)
+
+if not cap.isOpened():
+    print("Error al abrir el video")
+    exit()
+
+frame_count = 0
+# 15500 es el número de fotogramas del video de bromelia 1
+
+while True:
+    ret, frame = cap.read()
+
+    if not ret:
+        break
+
+    new_width = 120
+    new_height = 120
+    frame = cv2.resize(frame, (new_width, new_height), interpolation=cv2.INTER_CUBIC)
+
+    for angle in range(-15, 16):
+        rotated_frame = np.array(frame)
+        M = cv2.getRotationMatrix2D((new_width / 2, new_height / 2), angle, 1)
+        rotated_frame = cv2.warpAffine(rotated_frame, M, (new_width, new_height))
+
+        frame_filename = os.path.join(output_folder, f"{flor}_{frame_count:03d}_rotated_{angle:03d}.jpg")
+        cv2.imwrite(frame_filename, rotated_frame)
+
+        frame_count += 1
+
+cap.release()
+
+print(
+    f"Se han extraído {frame_count} fotogramas de la flor {flor} y se han guardado en la carpeta {output_folder}."
+)
+```
+
+Por otro lado tambien se descaargó datasets de internet entonces se usó el siguiente codigo para rotar las imagenes de todas las carpetas y guardarlas en otra carpeta ya rotadas y redimensionadas.
+
+```python
+import cv2
+import os
+import numpy as np
+
+def procesar_carpetas(carpeta_antigua, carpeta_salida):
+    for subcarpeta in os.listdir(carpeta_antigua):
+        subcarpeta_path = os.path.join(carpeta_antigua, subcarpeta)
+
+        if os.path.isdir(subcarpeta_path):
+            carpeta_salida_actual = os.path.join(carpeta_salida, subcarpeta)
+            os.makedirs(carpeta_salida_actual, exist_ok=True)
+
+            print(f"Procesando subcarpeta: {subcarpeta}")
+
+            for archivo in os.listdir(subcarpeta_path):
+                archivo_path = os.path.join(subcarpeta_path, archivo)
+
+                if os.path.isfile(archivo_path) and archivo.lower().endswith(('.jpg', '.jpeg')):
+                    frame = cv2.imread(archivo_path)
+
+                    new_width = 120
+                    new_height = 120
+                    frame = cv2.resize(frame, (new_width, new_height), interpolation=cv2.INTER_CUBIC)
+
+                    for angle in range(-15, 16):
+                        rotated_frame = np.array(frame)
+                        M = cv2.getRotationMatrix2D((new_width / 2, new_height / 2), angle, 1)
+                        rotated_frame = cv2.warpAffine(rotated_frame, M, (new_width, new_height))
+
+                        frame_filename = os.path.join(carpeta_salida_actual, f"{archivo[:-4]}_rotated_{angle:03d}.jpg")
+                        cv2.imwrite(frame_filename, rotated_frame)
+
+carpeta_antigua = "flowers"
+carpeta_salida = "datasetFlowers"
+procesar_carpetas(carpeta_antigua, carpeta_salida)
+```
+
+Puntos importantes a analizar ya con el dataset obtenido:
+
+- El tamaño de las imagenes es de 120x120
+- Las imagenes son a color por lo que la red acepta 3 canales para los colores
+- Las imagenes son de 5 tipos de flores diferentes:
+  - 0 Daisy
+  - 1 Dandelion
+  - 2 Roses
+  - 3 Sunflower
+  - 4 TigerLily
+- El formato de las imagenes es jpg, ya que con png no se podia leer el dataset correctamente debido a la transaparencia de las imagenes y todas eran negras al momento de leerlas
+
+Las configuraciones de la red neuronal son las siguientes:
+
+- INIT_LR (Learning Rate Inicial): 1e-3 (0.001): Es la tasa de aprendizaje inicial. Es un valor que se usa para actualizar los pesos de la red neuronal con el error de la red neuronal. Si el valor es muy pequeño, el entrenamiento será muy lento y si el valor es muy grande, el entrenamiento será muy rápido y la red neuronal no aprenderá correctamente.
+- EPOCHS: 30: Si el número de épocas es demasiado pequeño, la red podría no aprender patrones complejos en los datos. Por otro lado, si el número de épocas es excesivamente grande, puede conducir a un entrenamiento lento y, en casos extremos, a un sobreajuste donde la red memoriza el conjunto de datos en lugar de generalizar a nuevos datos. En la elección del número de épocas, es crucial encontrar un equilibrio para lograr un aprendizaje efectivo sin exceso de entrenamiento.
+- BATCH_SIZE (Batch Size): 64: Indica cuántas imágenes se toman a la vez durante el entrenamiento. Utilizar lotes más grandes puede acelerar el entrenamiento, pero requiere más memoria.
+- 1 Bloque de Convolución: 32 filtros de 3x3, activación Lineal, entrada de 120x120x3 y relleno de 1: El bloque de convolución es la parte de la red neuronal que se encarga de extraer las características de las imágenes. El bloque de convolución se compone de filtros que se encargan de extraer las características de las imágenes. Los filtros se aplican a las imágenes y se obtienen mapas de características. Los filtros se aplican a las imágenes con una ventana de 3x3 y se obtienen 32 mapas de características. La activación lineal se encarga de que la salida de los filtros sea positiva. La entrada de los filtros es de 120x120x3 que es el tamaño de las imágenes y el relleno de 1 es para que las imagenes no se reduzcan de tamaño.
+
+Los resultados de la red neuronal son los siguientes:
+
+1. Pérdida (Loss) y Precisión (Accuracy) en el Conjunto de Entrenamiento:
+   Pérdida final en entrenamiento: 0.2925
+
+   Precisión final en entrenamiento: 90.08%
+
+2. Pérdida (Loss) y Precisión (Accuracy) en el Conjunto de Validación:
+   Pérdida final en validación: 0.1928
+
+   Precisión final en validación: 94.54%
+
+La diferencia entre la precisión de entrenamiento y la precisión de validación no es excesiva, lo cual es un buen indicador de generalización.
+La pérdida y precisión en ambos conjuntos parecen evolucionar de manera coherente durante el entrenamiento, sin señales de sobreajuste o subajuste significativos.
