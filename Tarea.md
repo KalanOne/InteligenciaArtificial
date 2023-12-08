@@ -1351,8 +1351,8 @@ Los resultados de la red neuronal son los siguientes:
 
    Precisión final en validación: 94.54%
 
-![Texto alternativo](ValidationAccuracy.png)
-![Texto alternativo](ValidacionLoss.png)
+![Gráfica de Exactitud](ValidationAccuracy.png)
+![Gráfica de Pérdida](ValidacionLoss.png)
 
 La diferencia entre la precisión de entrenamiento y la precisión de validación no es excesiva, lo cual es un buen indicador de generalización.
 La pérdida y precisión en ambos conjuntos parecen evolucionar de manera coherente durante el entrenamiento, sin señales de sobreajuste o subajuste significativos.
