@@ -269,36 +269,44 @@ En mi método empecé por el alfil 3 de los que están arriba, lo moví hasta el
 ## Hacer un programa que pueda contar el numero de elementos que son del mismo color
 
 ```python
-   def visitar_isla(matriz, visitado, i, j, filas, columnas):
-   if i < 0 or i >= filas or j < 0 or j >= columnas or matriz[i][j] == 0 or visitado[i][j]:
-   return
+def VisitarIsla(matriz, visitado, i, j, filas, columnas):
+    if (
+        i < 0
+        or i >= filas
+        or j < 0
+        or j >= columnas
+        or matriz[i][j] == 0
+        or visitado[i][j]
+    ):
+        return
 
-      visitado[i][j] = True
+    visitado[i][j] = True
 
-      visitar_isla(matriz, visitado, i + 1, j, filas, columnas)
-      visitar_isla(matriz, visitado, i - 1, j, filas, columnas)
-      visitar_isla(matriz, visitado, i, j + 1, filas, columnas)
-      visitar_isla(matriz, visitado, i, j - 1, filas, columnas)
+    VisitarIsla(matriz, visitado, i + 1, j, filas, columnas)
+    VisitarIsla(matriz, visitado, i - 1, j, filas, columnas)
+    VisitarIsla(matriz, visitado, i, j + 1, filas, columnas)
+    VisitarIsla(matriz, visitado, i, j - 1, filas, columnas)
 
-   matriz_ejemplo = [
-   [0, 0, 0, 0, 0, 0, 1, 1],
-   [0, 1, 1, 0, 0, 1, 0, 0],
-   [0, 1, 1, 0, 0, 0, 0, 0],
-   [0, 0, 0, 0, 0, 1, 1, 1],
-   [0, 0, 1, 1, 0, 0, 0, 0]
-   ]
 
-   filas, columnas = len(matriz*ejemplo), len(matriz_ejemplo[0])
-   visitado = [[False] * columnas for _ in range(filas)]
-   count_islas = 0
+matrizBusqueda = [
+    [0, 0, 0, 0, 0, 0, 1, 1],
+    [0, 1, 1, 0, 0, 1, 0, 0],
+    [0, 1, 1, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 1, 1, 1],
+    [0, 0, 1, 1, 0, 0, 0, 0],
+]
 
-   for i in range(filas):
-   for j in range(columnas):
-   if matriz_ejemplo[i][j] == 1 and not visitado[i][j]:
-   count_islas += 1
-   visitar_isla(matriz_ejemplo, visitado, i, j, filas, columnas)
+filas, columnas = len(matrizBusqueda), len(matrizBusqueda[0])
+visitado = [[False] * columnas for _ in range(filas)]
+count = 0
 
-   print("Número de islas:", count_islas)
+for i in range(filas):
+    for j in range(columnas):
+        if matrizBusqueda[i][j] == 1 and not visitado[i][j]:
+            count += 1
+            VisitarIsla(matrizBusqueda, visitado, i, j, filas, columnas)
+
+    print("Número de islas:", count)
 ```
 
 # Introducción a la Inteligencia Artificial: Introspección
@@ -310,36 +318,36 @@ import cv2 as cv
 import numpy as np
 
 
-def visitar_isla_roja(matriz, visitado, inicio_fila, inicio_columna, filas, columnas):
-    stack = [(inicio_fila, inicio_columna)]
-    isla_size = 0
+def VisitarIsla(matriz, visitado, inicioFila, inicioCol, filas, columnas):
+    stack = [(inicioFila, inicioCol)]
+    tamanoIsla = 0
 
     while stack:
         i, j = stack.pop()
         if 0 <= i < filas and 0 <= j < columnas and matriz[i][j] == 255 and not visitado[i][j]:
             visitado[i][j] = True
-            isla_size += 1
+            tamanoIsla += 1
 
             stack.append((i + 1, j))
             stack.append((i - 1, j))
             stack.append((i, j + 1))
             stack.append((i, j - 1))
 
-    return isla_size
+    return tamanoIsla
 
-def contar_islas_rojas(matriz, elementos_minimos=100):
+def ContarIsla(matriz, elementos_minimos=100):
     filas, columnas = matriz.shape
     visitado = np.zeros_like(matriz, dtype=bool)
-    count_islas = 0
+    count = 0
 
     for i in range(filas):
         for j in range(columnas):
             if matriz[i][j] == 255 and not visitado[i][j]:
-                isla_size = visitar_isla_roja(matriz, visitado, i, j, filas, columnas)
-                if isla_size >= elementos_minimos:
-                    count_islas += 1
+                tamanoIsla = VisitarIsla(matriz, visitado, i, j, filas, columnas)
+                if tamanoIsla >= elementos_minimos:
+                    count += 1
 
-    return count_islas
+    return count
 
 
 imagen = "f1.jpg"
@@ -363,11 +371,11 @@ cv.imshow('resultado', resultado)
 cv.imshow('mascara', mascara)
 cv.imshow('imgColorOriginal', imgColorOriginal)
 
-matriz_imagen = np.array(mascara)
+matrizImagen = np.array(mascara)
 
-count_islas = contar_islas_rojas(matriz_imagen, 200)
+count = ContarIsla(matrizImagen, 200)
 
-print("Número de islas:", count_islas)
+print("Número de islas:", count)
 
 cv.waitKey(0)
 cv.destroyAllWindows()
@@ -516,13 +524,13 @@ Esta fórmula sugiere que la posición ganadora se calcula tomando la distancia 
 ```python
 import math
 
-def josephus_position(n):
-    power_of_two = 2 ** int(math.log2(n))
-    return 2 * (n - power_of_two) + 1
+def Posicion(n):
+    potencia = 2 ** int(math.log2(n))
+    return 2 * (n - potencia) + 1
 
-n_soldiers = 41
-winner_position = josephus_position(n_soldiers)
-print(f"Josephus debe sentarse en la posición {winner_position} para sobrevivir.")
+soldados = 10
+posicion = Posicion(soldados)
+print(f"Josephus debe sentarse en la posición {posicion} para sobrevivir.")
 ```
 
 # Introducción a la Inteligencia Artificial: El papel de la heurística
@@ -544,31 +552,31 @@ Ejemplos comunes de heurísticas incluyen "regla del pulgar", "usar la primera s
 ## Resolver con recursividad, programar.
 
 ```python
-def is_valid_move(labyrinth, x, y):
-    rows, cols = len(labyrinth), len(labyrinth[0])
-    return 0 <= x < rows and 0 <= y < cols and labyrinth[x][y] == 0
+def MovValido(laberinto, x, y):
+    rows, cols = len(laberinto), len(laberinto[0])
+    return 0 <= x < rows and 0 <= y < cols and laberinto[x][y] == 0
 
 
-def recursive_solve(labyrinth, current, goal, path):
-    x, y = current
-    if current == goal:
+def Recorrido(laberinto, actual, meta, camino):
+    x, y = actual
+    if actual == meta:
         return True
-    if not is_valid_move(labyrinth, x, y) or current in path:
+    if not MovValido(laberinto, x, y) or actual in camino:
         return False
 
-    path.append(current)
+    camino.append(actual)
 
-    neighbors = [(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]
+    vecinos = [(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]
 
-    for neighbor in neighbors:
-        if recursive_solve(labyrinth, neighbor, goal, path):
+    for vecino in vecinos:
+        if Recorrido(laberinto, vecino, meta, camino):
             return True
 
-    path.pop()
+    camino.pop()
     return False
 
 
-labyrinth = [
+laberinto = [
     [1, 1, 1, 1, 1, 1, 1, 1, 1],
     [0, 0, 0, 0, 0, 0, 1, 0, 1],
     [1, 1, 1, 0, 1, 1, 1, 0, 1],
@@ -580,18 +588,18 @@ labyrinth = [
     [1, 1, 1, 1, 1, 1, 1, 1, 1],
 ]
 
-start = (1, 0)
-goal = (7, 0)
+comienzo = (1, 0)
+meta = (7, 0)
 
-recursive_path = []
-recursive_solution = recursive_solve(labyrinth, start, goal, recursive_path)
-print("Recursive Algorithm:")
-if recursive_solution:
+caminoFinal = []
+solucion = Recorrido(laberinto, comienzo, meta, caminoFinal)
+print("Laberinto a resolver:")
+if solucion:
     print("Solution found:")
-    for step in recursive_path:
-        print(step)
+    for item in caminoFinal:
+        print(item)
 else:
-    print("No solution found.")
+    print("No se encontro solucion")
 ```
 
 ## Proponer Algoritmo de Solución, programar.
@@ -599,66 +607,66 @@ else:
 ```python
 import heapq
 
-class Node:
-    def __init__(self, x, y, parent=None):
+class Nodo:
+    def __init__(self, x, y, padre=None):
         self.x = x
         self.y = y
-        self.parent = parent
+        self.padre = padre
         self.g = 0
         self.h = 0
 
-    def __lt__(self, other):
+    def __lt__(self, otro):
         # Se usa < para comparar nodos y determinar cuál es menor
-        return (self.g + self.h) < (other.g + other.h)
+        return (self.g + self.h) < (otro.g + otro.h)
 
-def is_valid_move(labyrinth, x, y):
-    rows, cols = len(labyrinth), len(labyrinth[0])
-    return 0 <= x < rows and 0 <= y < cols and labyrinth[x][y] == 0
+def EsMovimientoValido(laberinto, x, y):
+    filas, columnas = len(laberinto), len(laberinto[0])
+    return 0 <= x < filas and 0 <= y < columnas and laberinto[x][y] == 0
 
-def heuristic(node, goal):
+def DistanciaManhattan(nodo, meta):
     # Distancia Manhattan entre el nodo y la meta
-    return abs(node.x - goal[0]) + abs(node.y - goal[1])
+    return abs(nodo.x - meta[0]) + abs(nodo.y - meta[1])
 
-def reconstruct_path(current_node):
-    path = []
-    while current_node:
-        path.append((current_node.x, current_node.y))
-        current_node = current_node.parent
-    # El path se construye del final al inicio, por lo que hay que invertirlo
-    return path[::-1]
+def ReconstruirCamino(nodoActual):
+    camino = []
+    while nodoActual:
+        camino.append((nodoActual.x, nodoActual.y))
+        nodoActual = nodoActual.padre
+    # El camino se construye del final al inicio, por lo que hay que invertirlo
+    return camino[::-1]
 
-def a_star(labyrinth, start, goal):
-    open_set = []
-    closed_set = set()
+def AEstrella(laberinto, inicio, meta):
+    listaAbierta = []
+    listaCerrada = set()
 
-    start_node = Node(start[0], start[1])
-    goal_node = Node(goal[0], goal[1])
+    nodoInicio = Nodo(inicio[0], inicio[1])
+    nodoMeta = Nodo(meta[0], meta[1])
 
-    heapq.heappush(open_set, start_node)
+    heapq.heappush(listaAbierta, nodoInicio)
 
-    while open_set:
-        current_node = heapq.heappop(open_set)
+    while listaAbierta:
+        nodoActual = heapq.heappop(listaAbierta)
 
-        if (current_node.x, current_node.y) == (goal_node.x, goal_node.y):
-            return reconstruct_path(current_node)
+        if (nodoActual.x, nodoActual.y) == (nodoMeta.x, nodoMeta.y):
+            return ReconstruirCamino(nodoActual)
 
-        closed_set.add((current_node.x, current_node.y))
+        listaCerrada.add((nodoActual.x, nodoActual.y))
 
-        neighbors = [(current_node.x + 1, current_node.y),
-                     (current_node.x - 1, current_node.y),
-                     (current_node.x, current_node.y + 1),
-                     (current_node.x, current_node.y - 1)]
+        vecinos = [(nodoActual.x + 1, nodoActual.y),
+                   (nodoActual.x - 1, nodoActual.y),
+                   (nodoActual.x, nodoActual.y + 1),
+                   (nodoActual.x, nodoActual.y - 1)]
 
-        for neighbor in neighbors:
-            if neighbor not in closed_set and is_valid_move(labyrinth, *neighbor):
-                neighbor_node = Node(neighbor[0], neighbor[1], current_node)
-                neighbor_node.g = current_node.g + 1
-                neighbor_node.h = heuristic(neighbor_node, goal)
+        for vecino in vecinos:
+            if vecino not in listaCerrada and EsMovimientoValido(laberinto, *vecino):
+                nodoVecino = Nodo(vecino[0], vecino[1], nodoActual)
+                nodoVecino.g = nodoActual.g + 1
+                nodoVecino.h = DistanciaManhattan(nodoVecino, meta)
 
-                if neighbor_node not in open_set:
-                    heapq.heappush(open_set, neighbor_node)
+                if nodoVecino not in listaAbierta:
+                    heapq.heappush(listaAbierta, nodoVecino)
 
-labyrinth = [
+laberinto = [
     [1, 1, 1, 1, 1, 1, 1, 1, 1],
     [0, 0, 0, 0, 0, 0, 1, 0, 1],
     [1, 1, 1, 0, 1, 1, 1, 0, 1],
@@ -670,26 +678,21 @@ labyrinth = [
     [1, 1, 1, 1, 1, 1, 1, 1, 1]
 ]
 
-start = (1, 0)
-goal = (7, 0)
+inicio = (1, 0)
+meta = (7, 0)
 
-a_star_solution = a_star(labyrinth, start, goal)
-print("A* Algorithm:")
-if a_star_solution:
-    print("Solution found:")
-    for step in a_star_solution:
-        print(step)
+solucion = AEstrella(laberinto, inicio, meta)
+print("Algoritmo A*:")
+if solucion:
+    print("Solución encontrada:")
+    for paso in solucion:
+        print(paso)
 else:
-    print("No solution found.")
+    print("No se encontró solución.")
+
 ```
 
 ## Describir el punto anterior
-
-El algoritmo A* es un algoritmo de búsqueda de rutas que se utiliza para encontrar el camino más corto entre dos nodos o puntos. A* es una versión popular y ampliamente utilizada de la búsqueda de rutas de primer nivel que es informada o guíada por heurística.
-
-El algoritmo A\* se basa en el algoritmo de búsqueda de rutas de primer nivel, que es un algoritmo de búsqueda de rutas no informado. La búsqueda de rutas de primer nivel es un algoritmo de búsqueda de rutas que se utiliza para encontrar el camino más corto entre dos nodos o puntos. La búsqueda de rutas de primer nivel es un algoritmo de búsqueda de rutas no informado, lo que significa que no tiene información sobre la ubicación y la distribución de los nodos en el espacio de búsqueda, excepto su vecindad directa. La búsqueda de rutas de primer nivel es un algoritmo de búsqueda de rutas completa, lo que significa que siempre encontrará una solución si existe.
-
-El algoritmo A* es una versión mejorada de la búsqueda de rutas de primer nivel. A* es un algoritmo de búsqueda de rutas informado, lo que significa que tiene información sobre la ubicación y la distribución de los nodos en el espacio de búsqueda, lo que se utiliza para guiar la búsqueda. A\* es un algoritmo de búsqueda de rutas completo, lo que significa que siempre encontrará una solución si existe.
 
 El programa empieza por la importación del módulo de heapq la cual ayuda a manejar proporciona funciones para trabajar con colas de prioridad implementadas como montículos binarios.
 
@@ -705,7 +708,7 @@ Despues definimos la función principal que es la que va a resolver el laberinto
 Mientras que haya algun elemento en la cola de prioridad open_set que es la lista abierta que usa el algoritmo hará lo siguiente:
 
 1. Se saca el primer elemento de la cola de prioridad y se guarda en la variable current_node.
-2. Se verifica si el nodo actual es igual al nodo meta, si es igual se llama a la función reconstruct_path y se le pasa el nodo actual.
+2. Se verifica si el nodo actual es igual al nodo meta, si es igual se llama a la función ReconstruirCamino y se le pasa el nodo actual.
 3. Se agrega el nodo actual al conjunto de nodos visitados.
 4. Se definen los vecinos del nodo actual.
 5. Se recorren los vecinos del nodo actual.
@@ -715,7 +718,7 @@ Mientras que haya algun elemento en la cola de prioridad open_set que es la list
 
 Despues se define el laberinto el cual en este caso es una matriz de 9x9, el nodo inicial y el nodo meta.
 
-Despues se llama a la función a_star y se le pasan los parametros definidos anteriormente.
+Despues se llama a la función AEstrella y se le pasan los parametros definidos anteriormente.
 
 Despues se imprime el camino que se debe seguir para llegar a la meta.
 
@@ -1231,21 +1234,21 @@ import cv2
 import os
 import numpy as np
 
-input_video = "RosaDesierto.mp4"
+video = "RosaDesierto.mp4"
 
 flor = "RosaDesierto"
 
-output_folder = f"datasetFlowers/{flor}/"
+folderSalida = f"datasetFlowers/{flor}/"
 
-os.makedirs(output_folder, exist_ok=True)
+os.makedirs(folderSalida, exist_ok=True)
 
-cap = cv2.VideoCapture(input_video)
+cap = cv2.VideoCapture(video)
 
 if not cap.isOpened():
     print("Error al abrir el video")
     exit()
 
-frame_count = 0
+count = 0
 # 15500 es el número de fotogramas del video de bromelia 1
 
 while True:
@@ -1254,24 +1257,24 @@ while True:
     if not ret:
         break
 
-    new_width = 120
-    new_height = 120
-    frame = cv2.resize(frame, (new_width, new_height), interpolation=cv2.INTER_CUBIC)
+    widthNuevo = 120
+    heightNuevo = 120
+    frame = cv2.resize(frame, (widthNuevo, heightNuevo), interpolation=cv2.INTER_CUBIC)
 
     for angle in range(-15, 16):
-        rotated_frame = np.array(frame)
-        M = cv2.getRotationMatrix2D((new_width / 2, new_height / 2), angle, 1)
-        rotated_frame = cv2.warpAffine(rotated_frame, M, (new_width, new_height))
+        frameRotado = np.array(frame)
+        M = cv2.getRotationMatrix2D((widthNuevo / 2, heightNuevo / 2), angle, 1)
+        frameRotado = cv2.warpAffine(frameRotado, M, (widthNuevo, heightNuevo))
 
-        frame_filename = os.path.join(output_folder, f"{flor}_{frame_count:03d}_rotated_{angle:03d}.jpg")
-        cv2.imwrite(frame_filename, rotated_frame)
+        nombreArchivo = os.path.join(folderSalida, f"{flor}_{count:03d}_rotated_{angle:03d}.jpg")
+        cv2.imwrite(nombreArchivo, frameRotado)
 
-        frame_count += 1
+        count += 1
 
 cap.release()
 
 print(
-    f"Se han extraído {frame_count} fotogramas de la flor {flor} y se han guardado en la carpeta {output_folder}."
+    f"Se han extraído {count} fotogramas de la flor {flor} y se han guardado en la carpeta {folderSalida}."
 )
 ```
 
@@ -1282,37 +1285,37 @@ import cv2
 import os
 import numpy as np
 
-def procesar_carpetas(carpeta_antigua, carpeta_salida):
-    for subcarpeta in os.listdir(carpeta_antigua):
-        subcarpeta_path = os.path.join(carpeta_antigua, subcarpeta)
+def ProcesarCarpetas(carpetaAntigua, carpetaNueva):
+    for subcarpeta in os.listdir(carpetaAntigua):
+        direccionSubcarpeta = os.path.join(carpetaAntigua, subcarpeta)
 
-        if os.path.isdir(subcarpeta_path):
-            carpeta_salida_actual = os.path.join(carpeta_salida, subcarpeta)
-            os.makedirs(carpeta_salida_actual, exist_ok=True)
+        if os.path.isdir(direccionSubcarpeta):
+            carpetaSalidaActual = os.path.join(carpetaNueva, subcarpeta)
+            os.makedirs(carpetaSalidaActual, exist_ok=True)
 
             print(f"Procesando subcarpeta: {subcarpeta}")
 
-            for archivo in os.listdir(subcarpeta_path):
-                archivo_path = os.path.join(subcarpeta_path, archivo)
+            for archivo in os.listdir(direccionSubcarpeta):
+                direccionArchivo = os.path.join(direccionSubcarpeta, archivo)
 
-                if os.path.isfile(archivo_path) and archivo.lower().endswith(('.jpg', '.jpeg')):
-                    frame = cv2.imread(archivo_path)
+                if os.path.isfile(direccionArchivo) and archivo.lower().endswith(('.jpg', '.jpeg')):
+                    frame = cv2.imread(direccionArchivo)
 
-                    new_width = 120
-                    new_height = 120
-                    frame = cv2.resize(frame, (new_width, new_height), interpolation=cv2.INTER_CUBIC)
+                    widthNuevo = 120
+                    heightNuevo = 120
+                    frame = cv2.resize(frame, (widthNuevo, heightNuevo), interpolation=cv2.INTER_CUBIC)
 
                     for angle in range(-15, 16):
-                        rotated_frame = np.array(frame)
-                        M = cv2.getRotationMatrix2D((new_width / 2, new_height / 2), angle, 1)
-                        rotated_frame = cv2.warpAffine(rotated_frame, M, (new_width, new_height))
+                        frameRotado = np.array(frame)
+                        M = cv2.getRotationMatrix2D((widthNuevo / 2, heightNuevo / 2), angle, 1)
+                        frameRotado = cv2.warpAffine(frameRotado, M, (widthNuevo, heightNuevo))
 
-                        frame_filename = os.path.join(carpeta_salida_actual, f"{archivo[:-4]}_rotated_{angle:03d}.jpg")
-                        cv2.imwrite(frame_filename, rotated_frame)
+                        frame_filename = os.path.join(carpetaSalidaActual, f"{archivo[:-4]}_rotated_{angle:03d}.jpg")
+                        cv2.imwrite(frame_filename, frameRotado)
 
-carpeta_antigua = "flowers"
-carpeta_salida = "datasetFlowers"
-procesar_carpetas(carpeta_antigua, carpeta_salida)
+carpetaAntigua = "flowers"
+carpetaNueva = "datasetFlowers"
+ProcesarCarpetas(carpetaAntigua, carpetaNueva)
 ```
 
 Puntos importantes a analizar ya con el dataset obtenido:
@@ -1347,6 +1350,9 @@ Los resultados de la red neuronal son los siguientes:
    Pérdida final en validación: 0.1928
 
    Precisión final en validación: 94.54%
+
+![Texto alternativo](ValidationAccuracy.png)
+![Texto alternativo](ValidacionLoss.png)
 
 La diferencia entre la precisión de entrenamiento y la precisión de validación no es excesiva, lo cual es un buen indicador de generalización.
 La pérdida y precisión en ambos conjuntos parecen evolucionar de manera coherente durante el entrenamiento, sin señales de sobreajuste o subajuste significativos.
